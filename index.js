@@ -83,6 +83,15 @@ const styles = StyleSheet.create({
   overlayButton: {
     flex: 1,
   },
+  closeButton: {
+    padding:10,
+    margin:20,
+    width:50,
+    backgroundColor:"rgba(0,0,0,0.15)",
+    borderRadius:10,
+    borderWidth: 1,
+    borderColor:"transparent"
+  },
 });
 
 export default class VideoPlayer extends Component {
@@ -111,6 +120,7 @@ export default class VideoPlayer extends Component {
     this.onEnd = this.onEnd.bind(this);
     this.onLoad = this.onLoad.bind(this);
     this.onPlayPress = this.onPlayPress.bind(this);
+    this.onClosePress = this.onClosePress.bind(this);
     this.onMutePress = this.onMutePress.bind(this);
     this.showControls = this.showControls.bind(this);
     this.onToggleFullScreen = this.onToggleFullScreen.bind(this);
@@ -204,6 +214,12 @@ export default class VideoPlayer extends Component {
       isPlaying: !this.state.isPlaying,
     });
     this.showControls();
+  }
+
+  onClosePress() {
+    if (this.props.onClosePress) {
+      this.props.onClosePress();
+    }
   }
 
   onMutePress() {
@@ -483,7 +499,19 @@ export default class VideoPlayer extends Component {
             { marginTop: -this.getSizeStyles().height },
           ]}
         >
-          <TouchableOpacity
+            {this.state.isControlsVisible &&
+            <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                    this.onClosePress();
+                }}
+            >
+                <View>
+                    <Icon name={'close'} size={30} color={"#FFF"}/>
+                </View>
+            </TouchableOpacity>
+            }
+        <TouchableOpacity
             style={styles.overlayButton}
             onPress={() => {
               this.showControls();
@@ -571,6 +599,7 @@ VideoPlayer.propTypes = {
   onLoad: PropTypes.func,
   onStart: PropTypes.func,
   onPlayPress: PropTypes.func,
+  onClosePress: PropTypes.func,
   onHideControls: PropTypes.func,
   onShowControls: PropTypes.func,
 };
